@@ -2,6 +2,7 @@ require "test_helper"
 
 describe WorksController do
   let(:existing_work) { Work.first }
+  let (:user) { User.first }
 
   describe "root" do
     it "succeeds with all media types" do
@@ -16,9 +17,7 @@ describe WorksController do
     end
 
     it "succeeds with no media" do
-      Work.all do |work|
-        work.destroy
-      end
+      Work.all(&:destroy)
 
       get root_path
 
@@ -37,9 +36,7 @@ describe WorksController do
     end
 
     it "succeeds when there are no works" do
-      Work.all do |work|
-        work.destroy
-      end
+      Work.all(&:destroy)
 
       get works_path
 
@@ -185,19 +182,52 @@ describe WorksController do
 
   describe "upvote" do
     it "redirects to the work page if no user is logged in" do
-      skip
+      post upvote_path(existing_work.id)
+
+      must_respond_with :redirect
+      expect(flash[:result_text]).must_equal 'You must log in to do that'
     end
 
     it "redirects to the work page after the user has logged out" do
-      skip
+      perform_login(user)
+      expect(session[:user_id]).must_equal user.id
+
+      delete logout_path
+      assert_nil(session[:user_id])
+
+      post upvote_path(existing_work.id)
+
+      must_respond_with :redirect
+      expect(flash[:result_text]).must_equal 'You must log in to do that'
     end
 
     it "succeeds for a logged-in user and a fresh user-vote pair" do
-      skip
+      user_vote_ct = user.votes.count
+      work_vote_ct = existing_work.votes.count
+
+      perform_login(user)
+      expect(session[:user_id]).must_equal user.id
+
+      expect { post upvote_path(existing_work.id) }.must_change 'Vote.count', 1
+      expect(user.votes.count).must_equal user_vote_ct + 1
+      expect(existing_work.votes.count).must_equal work_vote_ct + 1
+      expect(flash[:status]).must_equal :success
+      expect(flash[:result_text]).must_equal 'Successfully upvoted!'
     end
 
     it "redirects to the work page if the user has already voted for that work" do
-      skip
+      perform_login(user)
+      expect(session[:user_id]).must_equal user.id
+
+      post upvote_path(existing_work.id)
+
+      user_vote_ct = user.votes.count
+      work_vote_ct = existing_work.votes.count
+
+      expect { post upvote_path(existing_work.id) }.wont_change 'Vote.count'
+      expect(user.votes.count).must_equal user_vote_ct
+      expect(existing_work.votes.count).must_equal work_vote_ct
+      expect(flash[:result_text]).must_equal 'Could not upvote'
     end
   end
 end

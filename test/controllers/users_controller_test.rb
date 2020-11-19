@@ -1,11 +1,11 @@
-require "test_helper"
+require 'test_helper'
 
 describe UsersController do
 
   let (:user) { User.first }
 
   describe 'login' do
-    it "logs in an existing user and redirects to the root route" do
+    it 'logs in an existing user and redirects to the root route' do
       start_count = User.count
       perform_login(user)
 
@@ -14,7 +14,7 @@ describe UsersController do
       expect(User.count).must_equal start_count
     end
 
-    it "creates an account for a new user and redirects to the root route" do
+    it 'creates an account for a new user and redirects to the root route' do
       new_user = User.new(
         username: 'username',
         provider: 'github',
@@ -24,13 +24,13 @@ describe UsersController do
 
       expect{
         perform_login(new_user)
-      }.must_change "User.count", 1
+      }.must_change 'User.count', 1
 
       must_redirect_to root_path
       expect(session[:user_id]).must_equal User.last.id
     end
 
-    it "redirects to the login route if given invalid user data" do
+    it 'redirects to the login route if given invalid user data' do
       new_user = User.new(
         username: nil,
         provider: 'github',
@@ -40,7 +40,7 @@ describe UsersController do
 
       expect{
         perform_login(new_user)
-      }.wont_change "User.count"
+      }.wont_change 'User.count'
 
       must_redirect_to root_path
       assert_nil(session[:user_id])
@@ -58,10 +58,6 @@ describe UsersController do
 
       assert_nil(session[:user_id])
       must_redirect_to root_path
-    end
-
-    it 'test if someone not logged in tries to log out...?' do
-
     end
   end
 end
