@@ -1,20 +1,23 @@
 require "test_helper"
 
 describe Work do
+
+  let (:work) {
+    Work.first
+  }
+
   describe "relations" do
     it "has a list of votes" do
-      album = works(:album)
-      expect(album).must_respond_to :votes
-      album.votes.each do |vote|
+      expect(work).must_respond_to :votes
+      work.votes.each do |vote|
         expect(vote).must_be_kind_of Vote
       end
     end
 
     it "has a list of voting users" do
-      album = works(:album)
-      expect(album).must_respond_to :ranking_users
-      album.ranking_users.each do |user|
-        expect(user).must_be_kind_of User
+      expect(work).must_respond_to :ranking_users
+      work.ranking_users.each do |user|
+        expect(work).must_be_kind_of User
       end
     end
   end
@@ -81,9 +84,8 @@ describe Work do
     end
 
     it "tracks the number of votes" do
-      work = Work.create!(title: "test title", category: "movie")
       4.times do |i|
-        user = User.create!(username: "user#{i}")
+        user = User.create!(username: "test_user_#{i}", uid: i)
         Vote.create!(user: user, work: work)
       end
       expect(work.vote_count).must_equal 4
@@ -92,28 +94,9 @@ describe Work do
   end
 
   describe "top_ten" do
-    before do
-      # TODO DPR: This runs pretty slow. Fixtures?
-      # Create users to do the voting
-      test_users = []
-      20.times do |i|
-        test_users << User.create!(username: "user#{i}")
-      end
-
-      # Create media to vote upon
-      Work.where(category: "movie").destroy_all
-      8.times do |i|
-        work = Work.create!(category: "movie", title: "test movie #{i}")
-        vote_count = rand(test_users.length)
-        test_users.first(vote_count).each do |user|
-          Vote.create!(work: work, user: user)
-        end
-      end
-    end
-
     it "returns a list of media of the correct category" do
       movies = Work.top_ten("movie")
-      expect(movies.length).must_equal 8
+      expect(movies.length).must_equal 4
       movies.each do |movie|
         expect(movie).must_be_kind_of Work
         expect(movie.category).must_equal "movie"
@@ -131,15 +114,12 @@ describe Work do
 
     it "returns at most 10 items" do
       movies = Work.top_ten("movie")
-      expect(movies.length).must_equal 8
+      expect(movies.length).must_equal 4
 
-      Work.create(title: "phase 2 test movie 1", category: "movie")
-      expect(Work.top_ten("movie").length).must_equal 9
+      10.times do |num|
+        Work.create(title: "test movie #{num}", category: "movie")
+      end
 
-      Work.create(title: "phase 2 test movie 2", category: "movie")
-      expect(Work.top_ten("movie").length).must_equal 10
-
-      Work.create(title: "phase 2 test movie 3", category: "movie")
       expect(Work.top_ten("movie").length).must_equal 10
     end
   end
