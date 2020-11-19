@@ -1,23 +1,23 @@
 require "test_helper"
 
 describe Vote do
+  let (:v) { Vote.first }
+
   describe "relations" do
     it "has a user" do
-      v = votes(:one)
       expect(v).must_respond_to :user
       expect(v.user).must_be_kind_of User
     end
 
     it "has a work" do
-      v = votes(:one)
       expect(v).must_respond_to :work
       expect(v.work).must_be_kind_of Work
     end
   end
 
   describe "validations" do
-    let (:user1) { User.new(username: "chris") }
-    let (:user2) { User.new(username: "chris") }
+    let (:user1) { User.new(username: "chris", uid: 123) }
+    let (:user2) { User.new(username: "chris", uid: 123) }
     let (:work1) { Work.new(category: "book", title: "House of Leaves") }
     let (:work2) { Work.new(category: "book", title: "For Whom the Bell Tolls") }
 
