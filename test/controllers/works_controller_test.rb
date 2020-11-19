@@ -1,21 +1,17 @@
 require "test_helper"
 
 describe WorksController do
-  let(:existing_work) { works(:album) }
+  let(:existing_work) { Work.first }
 
   describe "root" do
     it "succeeds with all media types" do
       get root_path
-
       must_respond_with :success
     end
 
     it "succeeds with one media type absent" do
-      only_book = works(:poodr)
-      only_book.destroy
-
+      Work.where(category: 'album').destroy_all
       get root_path
-
       must_respond_with :success
     end
 
