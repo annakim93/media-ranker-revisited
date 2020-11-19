@@ -34,4 +34,11 @@ describe UsersController do
     end
   end
 
+  describe 'logout' do
+    it 'can logout an existing user' do
+      perform_login(user)
+      delete logout_path
+      assert_nil(session[:user_id])
+    end
+  end
 end
