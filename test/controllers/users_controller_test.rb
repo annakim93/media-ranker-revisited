@@ -46,7 +46,7 @@ describe UsersController do
       assert_nil(session[:user_id])
 
       user = User.find_by(uid: new_user.uid, provider: new_user.provider)
-      expect(user).must_equal nil
+      assert_nil(user)
     end
   end
 
