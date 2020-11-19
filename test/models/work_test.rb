@@ -85,7 +85,7 @@ describe Work do
 
     it "tracks the number of votes" do
       4.times do |i|
-        user = User.create!(username: "test_user_#{i}", uid: i)
+        user = User.create!(username: "test_user_#{i}", uid: i, email: "test#{i}@test.com")
         Vote.create!(user: user, work: work)
       end
       expect(work.vote_count).must_equal 4
