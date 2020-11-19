@@ -59,5 +59,13 @@ describe UsersController do
       assert_nil(session[:user_id])
       must_redirect_to root_path
     end
+
+    it 'cannot logout if not already logged in' do
+      delete logout_path
+
+      expect(flash[:status]).must_equal :failure
+      expect(flash[:result_text]).must_equal 'You must log in to do that'
+      must_redirect_to root_path
+    end
   end
 end
