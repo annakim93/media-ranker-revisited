@@ -8,9 +8,6 @@ class UsersController < ApplicationController
     render_404 unless @user
   end
 
-  def login_form
-  end
-
   def login
     username = params[:username]
     if username and user = User.find_by(username: username)
