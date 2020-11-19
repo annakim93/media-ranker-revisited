@@ -27,7 +27,8 @@ class ActiveSupport::TestCase
         provider: user.provider,
         uid: user.uid,
         info: {
-            email: user.email
+            email: user.email,
+            name: user.username
         }
     }
   end
@@ -36,9 +37,9 @@ class ActiveSupport::TestCase
     user ||= User.first
 
     OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(mock_auth_hash(user))
-    get auth_callback_path(:github)
+    get omniauth_callback_path(:github)
 
-    expect(session[:user_id]).must_equal user.id
+    user = User.find_by(uid: user.uid)
     return user
   end
 end
