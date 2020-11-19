@@ -12,7 +12,8 @@ class ApplicationController < ActionController::Base
     if session[:user_id]
       @login_user = User.find_by(id: session[:user_id])
     else
-      flash[:error] = 'Please log in to perform this action.'
+      flash[:status] = :failure
+      flash[:result_text] = 'Please log in to perform this action.'
       redirect_to root_path
     end
   end
