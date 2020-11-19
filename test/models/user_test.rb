@@ -28,11 +28,11 @@ describe User do
 
     it "requires a unique username" do
       username = "test username"
-      user1 = User.new(username: username, uid: 123)
+      user1 = User.new(username: username, uid: 123, email: 'test@test.com')
 
       user1.save!
 
-      user2 = User.new(username: username, uid: 456)
+      user2 = User.new(username: username, uid: 456, email: 'test2@test.com')
       result = user2.save
       expect(result).must_equal false
       expect(user2.errors.messages).must_include :username
@@ -46,13 +46,27 @@ describe User do
 
     it 'requires a unique uid' do
       uid = 123
-      user1 = User.new(username: 'test1', uid: uid)
+      user1 = User.new(username: 'test1', uid: uid, email: 'test@test.com')
       user1.save!
 
-      user2 = User.new(username: 'test2', uid: 123)
+      user2 = User.new(username: 'test2', uid: 123, email: 'test2@test.com')
       result = user2.save
       expect(result).must_equal false
       expect(user2.errors.messages).must_include :uid
+    end
+
+    it 'must have an email address' do
+      user.email = nil
+      expect(user.valid?).must_equal false
+      expect(user.errors.messages).must_include :email
+    end
+
+    it 'must have a unique email address' do
+      user.email = User.last.email
+
+      expect(user.valid?).must_equal false
+      expect(user.errors.messages).must_include :email
+      expect(user.errors.messages[:email]).must_equal ['has already been taken']
     end
   end
 end
