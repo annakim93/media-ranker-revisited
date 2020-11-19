@@ -31,14 +31,37 @@ describe UsersController do
     end
 
     it "redirects to the login route if given invalid user data" do
+      new_user = User.new(
+        username: nil,
+        provider: 'github',
+        email: 'someone@somewhere.com',
+        uid: 123
+      )
+
+      expect{
+        perform_login(new_user)
+      }.wont_change "User.count"
+
+      must_redirect_to root_path
+      assert_nil(session[:user_id])
+
+      user = User.find_by(uid: new_user.uid, provider: new_user.provider)
+      expect(user).must_equal nil
     end
   end
 
   describe 'logout' do
     it 'can logout an existing user' do
       perform_login(user)
+
       delete logout_path
+
       assert_nil(session[:user_id])
+      must_redirect_to root_path
+    end
+
+    it 'test if someone not logged in tries to log out...?' do
+
     end
   end
 end
