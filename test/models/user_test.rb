@@ -30,13 +30,29 @@ describe User do
       username = "test username"
       user1 = User.new(username: username, uid: 123)
 
-      # This must go through, so we use create!
       user1.save!
 
       user2 = User.new(username: username, uid: 456)
       result = user2.save
       expect(result).must_equal false
       expect(user2.errors.messages).must_include :username
+    end
+
+    it 'requires a uid' do
+      user = User.new(username: 'test')
+      expect(user.valid?).must_equal false
+      expect(user.errors.messages).must_include :uid
+    end
+
+    it 'requires a unique uid' do
+      uid = 123
+      user1 = User.new(username: 'test1', uid: uid)
+      user1.save!
+
+      user2 = User.new(username: 'test2', uid: 123)
+      result = user2.save
+      expect(result).must_equal false
+      expect(user2.errors.messages).must_include :uid
     end
   end
 end
