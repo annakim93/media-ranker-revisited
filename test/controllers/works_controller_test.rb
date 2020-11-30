@@ -3,6 +3,7 @@ require "test_helper"
 describe WorksController do
   let(:existing_work) { Work.first }
   let (:user) { User.first }
+  let (:user2) { User.find_by(id: existing_work.user_id) }
 
   CATEGORIES = %w(albums books movies)
   INVALID_CATEGORIES = ["nope", "42", "", "  ", "albumstrailingtext"]
@@ -42,11 +43,25 @@ describe WorksController do
     end
 
     it 'cannot update work' do
+      updates = { work: { title: "Dirty Computer" } }
 
+      expect {
+        put work_path(existing_work), params: updates
+      }.wont_change "Work.count"
+
+      must_redirect_to root_path
+      expect(flash[:status]).must_equal :failure
+      expect(flash[:result_text]).must_equal 'You must log in to do that'
     end
 
     it 'cannot destroy work' do
+      expect {
+        delete work_path(existing_work.id)
+      }.wont_change "Work.count"
 
+      must_redirect_to root_path
+      expect(flash[:status]).must_equal :failure
+      expect(flash[:result_text]).must_equal 'You must log in to do that'
     end
 
     it 'cannot upvote: redirects to the work page if no user is logged in' do
@@ -99,9 +114,22 @@ describe WorksController do
     end
 
     describe "edit" do
-      it "succeeds for an extant work ID" do
+      it "succeeds for an extant work ID given the correct logged-in user" do
+        existing_work
+        perform_login(user2)
+
         get edit_work_path(existing_work.id)
+
         must_respond_with :success
+      end
+
+      it "fails for an extant work ID given incorrect logged-in user" do
+        get edit_work_path(existing_work.id)
+
+        must_respond_with :redirect
+        must_redirect_to root_path
+        expect(flash[:status]).must_equal :failure
+        expect(flash[:result_text]).must_equal 'You must have created this work to edit or delete it.'
       end
 
       it "renders 404 not_found for a bogus work ID" do
@@ -115,7 +143,8 @@ describe WorksController do
     end
 
     describe "update" do
-      it "succeeds for valid data and an extant work ID" do
+      it "succeeds for valid data and an extant work ID given logged-in creator-user" do
+        perform_login(user2)
         updates = { work: { title: "Dirty Computer" } }
 
         expect {
@@ -128,7 +157,21 @@ describe WorksController do
         must_redirect_to work_path(existing_work.id)
       end
 
-      it "renders bad_request for bogus data" do
+      it "fails for valid data and an extant work ID if not logged-in creator-user" do
+        updates = { work: { title: "Dirty Computer" } }
+
+        expect {
+          put work_path(existing_work), params: updates
+        }.wont_change "Work.count"
+
+        must_respond_with :redirect
+        must_redirect_to root_path
+        expect(flash[:status]).must_equal :failure
+        expect(flash[:result_text]).must_equal 'You must have created this work to edit or delete it.'
+      end
+
+      it "renders bad_request for bogus data given logged in creator-user" do
+        perform_login(user2)
         updates = { work: { title: nil } }
 
         expect {
@@ -140,7 +183,8 @@ describe WorksController do
         must_respond_with :not_found
       end
 
-      it "renders 404 not_found for a bogus work ID" do
+      it "renders 404 not_found for a bogus work ID given logged in creator-user" do
+        perform_login(user2)
         bogus_id = existing_work.id
         existing_work.destroy
 
@@ -151,13 +195,26 @@ describe WorksController do
     end
 
     describe "destroy" do
-      it "succeeds for an extant work ID" do
+      it "succeeds for an extant work ID if given the correct user" do
+        perform_login(user2)
+
         expect {
           delete work_path(existing_work.id)
         }.must_change "Work.count", -1
 
         must_respond_with :redirect
         must_redirect_to root_path
+      end
+
+      it "fails for an extant work ID if given incorrect user" do
+        expect {
+          delete work_path(existing_work.id)
+        }.wont_change "Work.count"
+
+        must_respond_with :redirect
+        must_redirect_to root_path
+        expect(flash[:status]).must_equal :failure
+        expect(flash[:result_text]).must_equal 'You must have created this work to edit or delete it.'
       end
 
       it "renders 404 not_found and does not update the DB for a bogus work ID" do
@@ -174,7 +231,6 @@ describe WorksController do
 
     describe "upvote" do
       it "redirects to the work page after the user has logged out" do
-        # perform_login(user)
         expect(session[:user_id]).must_equal user.id
 
         delete logout_path
@@ -201,7 +257,6 @@ describe WorksController do
       end
 
       it "redirects to the work page if the user has already voted for that work" do
-        # perform_login(user)
         expect(session[:user_id]).must_equal user.id
 
         post upvote_path(existing_work.id)

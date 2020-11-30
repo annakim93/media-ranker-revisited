@@ -4,137 +4,137 @@ work_1:
   creator: Prof. Marine Kovacek
   publication_year: 1921
   description: this is a test work
-  user_id: 2
+  user_id: <%= ActiveRecord::FixtureSet.identify(:user_3) %>
 work_2:
   category: album
   title: work_2
   creator: Mittie Baumbach
   publication_year: 1998
   description: this is a test work
-  user_id: 1
+  user_id: <%= ActiveRecord::FixtureSet.identify(:user_1) %>
 work_3:
   category: album
   title: work_3
   creator: Aron Willms
   publication_year: 1989
   description: this is a test work
-  user_id: 4
+  user_id: <%= ActiveRecord::FixtureSet.identify(:user_4) %>
 work_4:
   category: album
   title: work_4
   creator: Carli Gibson
   publication_year: 1997
   description: this is a test work
-  user_id: 2
+  user_id: <%= ActiveRecord::FixtureSet.identify(:user_3) %>
 work_5:
   category: book
   title: work_5
   creator: Dr. Syble Bergstrom
   publication_year: 1988
   description: this is a test work
-  user_id: 7
+  user_id: <%= ActiveRecord::FixtureSet.identify(:user_7) %>
 work_6:
   category: album
   title: work_6
   creator: Brendon Mosciski
   publication_year: 1962
   description: this is a test work
-  user_id: 9
+  user_id: <%= ActiveRecord::FixtureSet.identify(:user_2) %>
 work_7:
   category: album
   title: work_7
   creator: Marguerite OKeefe
   publication_year: 1937
   description: this is a test work
-  user_id: 10
+  user_id: <%= ActiveRecord::FixtureSet.identify(:user_10) %>
 work_8:
   category: book
   title: work_8
   creator: Msgr. Sanda Paucek
   publication_year: 2005
   description: this is a test work
-  user_id: 8
+  user_id: <%= ActiveRecord::FixtureSet.identify(:user_9) %>
 work_9:
   category: book
   title: work_9
   creator: Adalberto Reilly
   publication_year: 1900
   description: this is a test work
-  user_id: 8
+  user_id: <%= ActiveRecord::FixtureSet.identify(:user_8) %>
 work_10:
   category: book
   title: work_10
   creator: Kristopher Romaguera
   publication_year: 1905
   description: this is a test work
-  user_id: 3
+  user_id: <%= ActiveRecord::FixtureSet.identify(:user_6) %>
 work_11:
   category: book
   title: work_11
   creator: Erika Gislason
   publication_year: 2017
   description: this is a test work
-  user_id: 1
+  user_id: <%= ActiveRecord::FixtureSet.identify(:user_4) %>
 work_12:
   category: album
   title: work_12
   creator: Jenni Hilpert
   publication_year: 1937
   description: this is a test work
-  user_id: 5
+  user_id: <%= ActiveRecord::FixtureSet.identify(:user_1) %>
 work_13:
   category: movie
   title: work_13
   creator: Sarah Mohr
   publication_year: 1970
   description: this is a test work
-  user_id: 6
+  user_id: <%= ActiveRecord::FixtureSet.identify(:user_6) %>
 work_14:
   category: movie
   title: work_14
   creator: Sen. Refugio Littel
   publication_year: 2018
   description: this is a test work
-  user_id: 10
+  user_id: <%= ActiveRecord::FixtureSet.identify(:user_10) %>
 work_15:
   category: book
   title: work_15
   creator: Msgr. Bruno Shields
   publication_year: 1992
   description: this is a test work
-  user_id: 8
+  user_id: <%= ActiveRecord::FixtureSet.identify(:user_7) %>
 work_16:
   category: movie
   title: work_16
   creator: Ethelene Fahey
   publication_year: 2007
   description: this is a test work
-  user_id: 9
+  user_id: <%= ActiveRecord::FixtureSet.identify(:user_3) %>
 work_17:
   category: movie
   title: work_17
   creator: Sidney Stroman DVM
   publication_year: 1932
   description: this is a test work
-  user_id: 2
+  user_id: <%= ActiveRecord::FixtureSet.identify(:user_1) %>
 work_18:
   category: album
   title: work_18
   creator: Elmer Simonis
   publication_year: 1993
   description: this is a test work
-  user_id: 3
+  user_id: <%= ActiveRecord::FixtureSet.identify(:user_5) %>
 work_19:
   category: album
   title: work_19
   creator: Alecia Koch
   publication_year: 1906
   description: this is a test work
-  user_id: 1
+  user_id: <%= ActiveRecord::FixtureSet.identify(:user_6) %>
 work_20:
   category: book
   title: work_20
   creator: Trinity Wintheiser
   publication_year: 1902
   description: this is a test work
-  user_id: 7
+  user_id: <%= ActiveRecord::FixtureSet.identify(:user_10) %>
