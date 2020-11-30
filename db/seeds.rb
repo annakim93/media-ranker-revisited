@@ -30,8 +30,8 @@ user_upload_failures = []
   end
 end
 
-puts "Added #{User.count} user records"
-puts "#{user_upload_failures.size} users failed to save"
+puts "\n\nAdded #{User.count} user records"
+puts "#{user_upload_failures.size} users failed to save\n\n"
 
 ####################################
 
@@ -46,9 +46,9 @@ work_upload_failures = []
   work.description = "Work #{num} is a work. It's cool I guess."
   work.category = categories.sample
   work.publication_year = rand(1900..2020)
-  work.user_id = rand(0..9)
+  work.user_id = rand(1..9)
 
-  successful = work.save
+  successful = work.save!
   if !successful
     work_upload_failures << work
     puts "Failed to save work: #{work.inspect}"
@@ -56,6 +56,18 @@ work_upload_failures = []
     puts "Created work: #{work.inspect}"
   end
 end
+
+puts "\n\nAdded #{Work.count} works"
+puts "#{work_upload_failures.size} works failed to save"
+
+####################################
+# SUMMARY:
+
+puts '###########################'
+puts 'SUMMARY OF SEED:'
+
+puts "\n\nAdded #{User.count} user records"
+puts "#{user_upload_failures.size} users failed to save\n\n"
 
 puts "Added #{Work.count} works"
 puts "#{work_upload_failures.size} works failed to save"
