@@ -2,6 +2,7 @@ class Work < ApplicationRecord
   CATEGORIES = %w(album book movie)
   has_many :votes, dependent: :destroy
   has_many :ranking_users, through: :votes, source: :user
+  belongs_to :user # choosing to leave work if user account is destroyed - still valid to be voted on
 
   validates :category, presence: true,
                        inclusion: {in: CATEGORIES}
