@@ -3,6 +3,7 @@ class WorksController < ApplicationController
   # of work we're dealing with
   before_action :category_from_work, except: [:root, :index, :new, :create]
   skip_before_action :find_user, only: [:root]
+  before_action :verify_user, only: [:edit, :update, :destroy]
 
   def root
     @albums = Work.best_albums
@@ -21,6 +22,7 @@ class WorksController < ApplicationController
 
   def create
     @work = Work.new(media_params)
+    @work.user = @login_user
     @media_category = @work.category
     if @work.save
       flash[:status] = :success
@@ -91,5 +93,13 @@ class WorksController < ApplicationController
     @work = Work.find_by(id: params[:id])
     return render_404 unless @work
     @media_category = @work.category.downcase.pluralize
+  end
+
+  def verify_user
+    unless @login_user.id == @work.user_id
+      flash[:status] = :failure
+      flash[:result_text] = 'You must have created this work to edit or delete it.'
+      redirect_to root_path
+    end
   end
 end
