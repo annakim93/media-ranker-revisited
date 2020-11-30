@@ -27,6 +27,13 @@ describe User do
         expect(work).must_be_kind_of Work
       end
     end
+
+    it 'has works that were created by them' do
+      expect(user).must_respond_to :works
+      user.works.each do |work|
+        expect(work).must_be_kind_of Work
+      end
+    end
   end
 
   describe "validations" do
