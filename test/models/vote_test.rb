@@ -16,29 +16,31 @@ describe Vote do
   end
 
   describe "validations" do
-    let (:user1) { User.new(username: "chris", uid: 123, email: 'chris@ada.com') }
-    let (:user2) { User.new(username: "anna", uid: 321, email: 'anna@banana.com') }
-    let (:work1) { Work.new(category: "book", title: "House of Leaves") }
-    let (:work2) { Work.new(category: "book", title: "For Whom the Bell Tolls") }
+    before do
+      @user1 = User.create!(username: "chris", uid: 123, email: 'chris@ada.com')
+      @user2 = User.create!(username: "anna", uid: 321, email: 'anna@banana.com')
+      @work1 = Work.create!(category: "book", title: "House of Leaves", user_id: @user1.id)
+      @work2 = Work.create!(category: "book", title: "For Whom the Bell Tolls", user_id: @user2.id)
+    end
 
     it "allows one user to vote for multiple works" do
-      vote1 = Vote.new(user: user1, work: work1)
+      vote1 = Vote.new(user: @user1, work: @work1)
       vote1.save!
-      vote2 = Vote.new(user: user1, work: work2)
+      vote2 = Vote.new(user: @user1, work: @work2)
       expect(vote2.valid?).must_equal true
     end
 
     it "allows multiple users to vote for a work" do
-      vote1 = Vote.new(user: user1, work: work1)
+      vote1 = Vote.new(user: @user1, work: @work1)
       vote1.save!
-      vote2 = Vote.new(user: user2, work: work1)
+      vote2 = Vote.new(user: @user2, work: @work1)
       expect(vote2.valid?).must_equal true
     end
 
     it "doesn't allow the same user to vote for the same work twice" do
-      vote1 = Vote.new(user: user1, work: work1)
+      vote1 = Vote.new(user: @user1, work: @work1)
       vote1.save!
-      vote2 = Vote.new(user: user1, work: work1)
+      vote2 = Vote.new(user: @user1, work: @work1)
       expect(vote2.valid?).must_equal false
       expect(vote2.errors.messages).must_include :user
     end

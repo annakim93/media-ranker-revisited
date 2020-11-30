@@ -23,9 +23,7 @@ describe Work do
     
     it 'belongs to a creator user' do
       expect(work).must_respond_to :user
-      work.users.each do |user|
-        expect(user).must_be_kind_of User
-      end
+      expect(work.user).must_be_kind_of User
     end
   end
 
@@ -33,7 +31,7 @@ describe Work do
     it 'allows the three valid categories' do
       valid_categories = ['album', 'book', 'movie']
       valid_categories.each do |category|
-        work = Work.new(title: 'test', category: category)
+        work = Work.new(title: 'test', category: category, user_id: User.first.id)
         expect(work.valid?).must_equal true
       end
     end
@@ -41,7 +39,7 @@ describe Work do
     it 'fixes almost-valid categories' do
       categories = ['Album', 'albums', 'ALBUMS', 'books', 'mOvIeS']
       categories.each do |category|
-        work = Work.new(title: 'test', category: category)
+        work = Work.new(title: 'test', category: category, user_id: User.first.id)
         expect(work.valid?).must_equal true
         expect(work.category).must_equal category.singularize.downcase
       end
@@ -50,7 +48,7 @@ describe Work do
     it 'rejects invalid categories' do
       invalid_categories = ['cat', 'dog', 'phd thesis', 1337, nil]
       invalid_categories.each do |category|
-        work = Work.new(title: 'test', category: category)
+        work = Work.new(title: 'test', category: category, user_id: User.first.id)
         expect(work.valid?).must_equal false
         expect(work.errors.messages).must_include :category
       end
@@ -65,27 +63,27 @@ describe Work do
     it 'requires unique names w/in categories' do
       category = 'album'
       title = 'test title'
-      work1 = Work.new(title: title, category: category)
+      work1 = Work.new(title: title, category: category, user_id: User.first.id)
       work1.save!
 
-      work2 = Work.new(title: title, category: category)
+      work2 = Work.new(title: title, category: category, user_id: User.first.id)
       expect(work2.valid?).must_equal false
       expect(work2.errors.messages).must_include :title
     end
 
     it 'does not require a unique name if the category is different' do
       title = 'test title'
-      work1 = Work.new(title: title, category: 'album')
+      work1 = Work.new(title: title, category: 'album', user_id: User.first.id)
       work1.save!
 
-      work2 = Work.new(title: title, category: 'book')
+      work2 = Work.new(title: title, category: 'book', user_id: User.first.id)
       expect(work2.valid?).must_equal true
     end
   end
 
   describe 'vote_count' do
     it 'defaults to 0' do
-      work = Work.create!(title: 'test title', category: 'movie')
+      work = Work.create!(title: 'test title', category: 'movie', user_id: User.first.id)
       expect(work).must_respond_to :vote_count
       expect(work.vote_count).must_equal 0
     end
@@ -124,7 +122,7 @@ describe Work do
       expect(movies.length).must_equal 4
 
       10.times do |num|
-        Work.create(title: "test movie #{num}", category: 'movie')
+        Work.create(title: "test movie #{num}", category: 'movie', user_id: User.first.id)
       end
 
       expect(Work.top_ten('movie').length).must_equal 10
